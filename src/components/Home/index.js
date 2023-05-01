@@ -1,180 +1,186 @@
 import {Component} from 'react'
-import {Link} from 'react-router-dom'
-
-import {AiOutlineSearch} from 'react-icons/ai'
 import Cookies from 'js-cookie'
-
-import Header from '../Header'
-import NxtWatchContext from '../../context/nxtWatchContext'
-import Sidebar from '../Sidebar'
-import {
-  Container,
-  HomeContainer,
-  HomeBanner,
-  HomeImageIcon,
-  HomeParagraph,
-  HomeButton,
-  SearchContainer,
-  SearchInputElement,
-  SearchButton,
-  NoVideoImage,
-  HomeHeading,
-  ThumbnailUrlImage,
-  ProfileUrlImage,
-  HomeVideoTitle,
-  EachVideoContainer,
-  HomeVideoDescription,
-  HomeVideoContainer,
-} from './styledComponents'
+import {Link, Redirect} from 'react-router-dom'
+import {AiOutlineSearch} from 'react-icons/ai'
+import LoaderComp from '../Loader'
 
 import './index.css'
 
-const apiStatusConstant = {
-  initial: 'INITIAL',
-  inProgress: 'IN_PROGRESS',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-}
+import AppTheme from '../../context/Theme'
+
+import ErrorImage from '../ErrorImage'
+
+import {
+  HomeContainer,
+  HeadDiv,
+  SearchIp,
+  ButtonEl,
+  ListContainer,
+  ListItem,
+  ImageTag,
+  ContentDiv,
+  ParaTag,
+  NoVideosImage,
+  NoResults,
+  NoResultsHeading,
+  NoResultsPara,
+  NoResultsButton,
+} from './styledComponents'
 
 class Home extends Component {
-  state = {
-    searchInputValue: '',
-    homeVideos: [],
-    apiStatus: apiStatusConstant.initial,
-  }
+  state = {dataArray: [], isLoading: true, status: '', searchIp: ''}
 
   componentDidMount() {
-    this.getHomeVideos()
+    this.getVideos()
   }
 
-  onChangeSearchInput = event => {
-    // this.setState({searchInputValue: event.target.value}, this.getHomeVideos)
-
-    console.log(event.key)
-    if (event.key === 'Enter') {
-      this.setState({searchInputValue: event.target.value})
-    }
-  }
-
-  setHomeVideosDataIntoState = data => {
-    const updatedData = data.videos.map(eachItem => ({
-      channel: eachItem.channel,
-      id: eachItem.id,
-      publishedAt: eachItem.published_at,
-      thumbnailUrl: eachItem.thumbnail_url,
-      title: eachItem.title,
-      viewCount: eachItem.view_count,
-    }))
-    this.setState({homeVideos: updatedData})
-  }
-
-  getHomeVideos = async () => {
+  getVideos = async (searchVal = '') => {
     const jwtToken = Cookies.get('jwt_token')
-    const {searchInputValue} = this.state
-    const url = `https://apis.ccbp.in/videos/all?search=${searchInputValue}`
+    const url = `https://apis.ccbp.in/videos/all?search=${searchVal}`
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
       method: 'GET',
     }
-    const response = await fetch(url, options)
-    if (response.ok === true) {
-      const data = await response.json()
-      this.setHomeVideosDataIntoState(data)
-      this.setState({apiStatus: apiStatusConstant.success})
-    } else {
-      this.setState({apiStatus: apiStatusConstant.failure})
+    try {
+      const response = await fetch(url, options)
+      if (response.ok) {
+        const data = await response.json()
+        await this.setState({dataArray: data.videos, status: true})
+      }
+    } catch {
+      this.setState({status: false})
+    }
+    this.setState({isLoading: false})
+  }
+
+  onChange = e => {
+    this.setState({searchIp: e.target.value})
+  }
+
+  onSearch = () => {
+    const {searchIp} = this.state
+    this.getVideos(searchIp)
+  }
+
+  onKey = e => {
+    if (e.key.toLowerCase() === 'enter') {
+      this.onSearch()
     }
   }
 
-  renderNoVideoes = () => (
-    <>
-      <NoVideoImage
-        src="https://assets.ccbp.in/frontend/react-js/nxt-watch-no-search-results-img.png"
-        alt="no video"
-      />
-      <HomeHeading>No Search results found</HomeHeading>
-      <HomeParagraph>
-        Try different key words or remove search filter
-      </HomeParagraph>
-    </>
-  )
-
-  renderHomeVideos = activeTheme => {
-    const {homeVideos} = this.state
-    if (homeVideos.length === 0) {
-      return this.renderNoVideoes()
-    }
-    return (
-      <div className={`home-video-rander-container ${activeTheme}`}>
-        {homeVideos.map(eachVideo => (
-          <Link
-            key={eachVideo.id}
-            className={`nav-link-text ${activeTheme}`}
-            to={`videos/${eachVideo.id}`}
-          >
-            <ThumbnailUrlImage src={eachVideo.thumbnailUrl} />
-            <EachVideoContainer className={activeTheme}>
-              <ProfileUrlImage src={eachVideo.channel.profile_image_url} />
-              <HomeVideoContainer>
-                <HomeVideoTitle className={activeTheme}>
-                  {eachVideo.title}
-                </HomeVideoTitle>
-                <HomeVideoDescription>
-                  {eachVideo.channel.name} {eachVideo.viewCount}{' '}
-                  {eachVideo.publishedAt}
-                </HomeVideoDescription>
-              </HomeVideoContainer>
-            </EachVideoContainer>
-          </Link>
-        ))}
-      </div>
-    )
+  retry = () => {
+    this.onSearch()
   }
 
   render() {
-    return (
-      <NxtWatchContext.Consumer>
-        {value => {
-          const {isDark} = value
-          const activeTheme = isDark ? 'dark-mode' : 'ligth-mode'
-          return (
-            <>
-              <Header />
-              <div className={`container-lg ${activeTheme}`}>
-                <div className="sidebar-container-lg">
-                  <Sidebar />
-                </div>
+    const {dataArray, isLoading, status, searchIp} = this.state
 
-                <HomeContainer>
-                  <HomeBanner className="banner-container">
-                    <HomeImageIcon
-                      src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-                      alt="website logo"
-                    />
-                    <HomeParagraph>
-                      Buy Nxt Watch Premium plans with UPI
-                    </HomeParagraph>
-                    <HomeButton>Get Now</HomeButton>
-                  </HomeBanner>
-                  <SearchContainer className={activeTheme}>
-                    <SearchInputElement
-                      type="text"
-                      onChange={this.onChangeSearchInput}
-                      placeholder="Search"
-                    />
-                    <SearchButton type="button">
-                      <AiOutlineSearch />
-                    </SearchButton>
-                  </SearchContainer>
-                  {this.renderHomeVideos(activeTheme)}
-                </HomeContainer>
-              </div>
-            </>
+    const jwtToken = Cookies.get('jwt_token')
+    if (jwtToken === undefined) {
+      return <Redirect to="/login" />
+    }
+
+    return (
+      <AppTheme.Consumer>
+        {value => {
+          const {activeTheme} = value
+          const color = activeTheme === 'light' ? '#000000' : '#ffffff'
+          const bgColor = activeTheme === 'light' ? '#f9f9f9' : '#000000'
+
+          return (
+            <HomeContainer bgColor={`${bgColor}`} color={`${color}`}>
+              {isLoading ? (
+                <LoaderComp />
+              ) : (
+                <>
+                  {status ? (
+                    <>
+                      <HeadDiv>
+                        <SearchIp
+                          placeholder="Search Channel"
+                          type="search"
+                          value={searchIp}
+                          onChange={this.onChange}
+                          onKeyDown={this.onKey}
+                        />
+                        <ButtonEl onClick={this.onSearch}>
+                          <AiOutlineSearch size={20} />
+                        </ButtonEl>
+                      </HeadDiv>
+                      <>
+                        {dataArray.length === 0 ? (
+                          <NoResults>
+                            <NoVideosImage
+                              src="https://assets.ccbp.in/frontend/react-js/nxt-watch-no-search-results-img.png"
+                              alt="no videos"
+                            />
+                            <NoResultsHeading>
+                              No Search results found
+                            </NoResultsHeading>
+                            <NoResultsPara>
+                              Try different keywords or remove search filter
+                            </NoResultsPara>
+                            <NoResultsButton onClick={this.retry}>
+                              Retry
+                            </NoResultsButton>
+                          </NoResults>
+                        ) : (
+                          <ContentDiv>
+                            {dataArray.map(item => (
+                              <Link
+                                to={`/videos/${item.id}`}
+                                className={
+                                  activeTheme === 'light'
+                                    ? 'link-light'
+                                    : 'link-dark'
+                                }
+                                key={item.id}
+                              >
+                                <ListContainer>
+                                  <ListItem>
+                                    <ImageTag
+                                      src={`${item.thumbnail_url}`}
+                                      width="100%"
+                                    />
+                                  </ListItem>
+                                  <ListItem>
+                                    <div className="logo-div">
+                                      <ImageTag
+                                        src={`${item.channel.profile_image_url}`}
+                                        width="30px"
+                                      />
+                                    </div>
+                                    <div>
+                                      <ParaTag fontSize="15px">
+                                        {item.title}
+                                      </ParaTag>
+                                      <ParaTag fontSize="12px">
+                                        {item.channel.name}
+                                      </ParaTag>
+                                      <ParaTag fontSize="12px">
+                                        {item.view_count} views .{' '}
+                                        <span>{item.published_at}</span>
+                                      </ParaTag>
+                                    </div>
+                                  </ListItem>
+                                </ListContainer>
+                              </Link>
+                            ))}
+                          </ContentDiv>
+                        )}
+                      </>
+                    </>
+                  ) : (
+                    <ErrorImage refresh={this.getVideos} />
+                  )}
+                </>
+              )}
+            </HomeContainer>
           )
         }}
-      </NxtWatchContext.Consumer>
+      </AppTheme.Consumer>
     )
   }
 }

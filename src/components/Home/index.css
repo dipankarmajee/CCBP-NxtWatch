@@ -1,44 +1,10 @@
-.nav-link-text {
-  text-decoration: none;
-  margin: 0;
-  padding: 0;
+.logo-div {
+  margin: 10px;
+}
+.link-light {
+  color: #000000;
 }
 
-.container-lg {
-  display: flex;
-}
-
-.sidebar-container-lg {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .sidebar-container-lg {
-    display: flex;
-    max-width: 100vw;
-  }
-
-  .banner-container {
-    background-image: url('https://assets.ccbp.in/frontend/react-js/nxt-watch-banner-bg.png');
-    background-size: cover;
-    width: 100%;
-    height: 250px;
-  }
-  .home-video-rander-container {
-    display: flex;
-    max-width: 100vw;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    background-color: lightgray;
-  }
-}
-
-.dark-mode {
-  background-color: #181818 !important;
-  color: #f9f9f9 !important;
-}
-
-.light-mode {
-  background-color: #f9f9f9 !important;
-  color: #181818 !important;
+.link-dark {
+  color: #ffffff;
 }

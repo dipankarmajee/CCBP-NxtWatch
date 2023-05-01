@@ -1,30 +1,27 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
+import {SiYoutubegaming} from 'react-icons/si'
 import {Link, Redirect} from 'react-router-dom'
-
-import {AiFillFire} from 'react-icons/ai'
-
 import LoaderComp from '../Loader'
 
-import AppTheme from '../../context/Theme'
-
 import './index.css'
+
+import AppTheme from '../../context/Theme'
 
 import {
   HomeContainer,
   ListContainer,
   ListItem,
+  ContentDiv,
   ImageTag,
-  LogoImage,
+  ParaTag,
   HeadDiv,
   HeaderEl,
-  ContentDiv,
-  ParaTag,
 } from './styledComponents'
 
 import ErrorImage from '../ErrorImage'
 
-class Trending extends Component {
+class Gaming extends Component {
   state = {dataArray: [], isLoading: true, status: ''}
 
   componentDidMount() {
@@ -32,9 +29,8 @@ class Trending extends Component {
   }
 
   getVideos = async () => {
-    this.setState({isLoading: true})
     const jwtToken = Cookies.get('jwt_token')
-    const url = 'https://apis.ccbp.in/videos/trending'
+    const url = 'https://apis.ccbp.in/videos/gaming'
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -68,7 +64,11 @@ class Trending extends Component {
           const bgColor = activeTheme === 'light' ? '#f9f9f9' : '#000000'
 
           return (
-            <HomeContainer bgColor={`${bgColor}`} color={`${color}`}>
+            <HomeContainer
+              data-testid="loader"
+              bgColor={`${bgColor}`}
+              color={`${color}`}
+            >
               {isLoading ? (
                 <LoaderComp />
               ) : (
@@ -82,11 +82,11 @@ class Trending extends Component {
                           }
                           color={color}
                         >
-                          <AiFillFire
+                          <SiYoutubegaming
                             size={40}
                             className={`trend-icon ${activeTheme}-icon`}
                           />{' '}
-                          Trending
+                          Gaming
                         </HeaderEl>
                       </HeadDiv>
                       <ContentDiv>
@@ -100,32 +100,21 @@ class Trending extends Component {
                             }
                             key={item.id}
                           >
-                            <ListContainer>
+                            <ListContainer key={item.id}>
                               <ListItem>
                                 <ImageTag
                                   src={`${item.thumbnail_url}`}
-                                  width="350px"
+                                  width="180px"
+                                  alt="video thumbnail"
                                 />
                               </ListItem>
                               <ListItem>
-                                <div className="logo-div">
-                                  <LogoImage
-                                    src={`${item.channel.profile_image_url}`}
-                                    width="30px"
-                                  />
-                                </div>
-                                <div>
-                                  <ParaTag fontSize="15px">
-                                    {item.title}
-                                  </ParaTag>
-                                  <ParaTag fontSize="12px">
-                                    {item.channel.name}
-                                  </ParaTag>
-                                  <ParaTag fontSize="12px">
-                                    {item.view_count} views .{' '}
-                                    <span>{item.published_at}</span>
-                                  </ParaTag>
-                                </div>
+                                <ParaTag fontSize="15px">{item.title}</ParaTag>
+                              </ListItem>
+                              <ListItem>
+                                <ParaTag fontSize="12px">
+                                  {item.view_count} Watching Worldwide
+                                </ParaTag>
                               </ListItem>
                             </ListContainer>
                           </Link>
@@ -133,7 +122,7 @@ class Trending extends Component {
                       </ContentDiv>
                     </>
                   ) : (
-                    <ErrorImage render={this.getVideos} />
+                    <ErrorImage refresh={this.getVideos} />
                   )}
                 </>
               )}
@@ -145,4 +134,4 @@ class Trending extends Component {
   }
 }
 
-export default Trending
+export default Gaming

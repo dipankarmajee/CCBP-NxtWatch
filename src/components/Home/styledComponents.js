@@ -1,118 +1,113 @@
 import styled from 'styled-components'
-import {CustomButton} from '../Header/styledComponents'
-import {LoginParagraph} from '../Login/styledComponents'
 
-export const Container = styled.div`
-  display: flex;
-`
-
-export const HomeContainer = styled(Container)`
-  flex-direction: column;
-`
-
-export const HomeBanner = styled(Container)`
-  flex-direction: column;
-  padding: 10px;
-  background-color: white;
-`
-export const HomeImageIcon = styled.img`
-  width: 150px;
-  margin-bottom: 20px;
-`
-
-export const HomeParagraph = styled(LoginParagraph)`
-  font-family: Roboto;
-  font-weight: 400;
-  font-size: 24px;
-  color: black;
-`
-
-export const HomeButton = styled(CustomButton)`
-  border: 2px solid black;
-  width: fit-content;
-  padding: 8px 20px 8px 20px;
-  font-weight: 500;
-`
-export const SearchContainer = styled(Container)`
-  justify-content: center;
-  align-items: center;
-  background-color: lightgray;
-  padding: 20px;
-  margin-top: 30px;
-  @media (min-width: 768px) {
-    justify-content: flex-start;
+export const HomeContainer = styled.div`
+  padding: 30px;
+  background-color: ${props => props.bgColor};
+  color: ${props => props.color};
+  @media (max-width: 767px) {
+    margin-top: 24px;
+    padding: 30px 0 30px 20px;
   }
 `
-export const SearchInputElement = styled.input`
+
+export const HeadDiv = styled.div`
+    border: 1px solid black;
+    width: fit-content;
+    border-radius: 4px;
+    display: flex;
+    background-color: #ffffff;
+    align-items: center;
+}`
+
+export const SearchIp = styled.input`
+    width: 300px;
+    outline: none;
+    padding: 5px;
+    border: none;
+    @media (max-width:767px){
+        width: 100%;
+    }
+}`
+
+export const ButtonEl = styled.button`
+  border: none;
   outline: none;
-  padding: 5px;
-  border: 2px solid gray;
-  width: 100%;
-  height: 40px;
-  @media (min-width: 768px) {
-    width: 400px;
-  }
-`
-export const SearchButton = styled(CustomButton)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 20px 8px 20px;
-  background-color: inherit;
-  border: 2px solid gray;
-  height: 40px;
-  font-size: 20px;
-`
-export const NoVideoImage = styled.img`
-  width: 60vw;
-`
-export const HomeHeading = styled.h1`
-  font-family: Roboto;
-`
-
-export const EachVideoContainer = styled(Container)`
-  align-items: center;
-  background-color: lightgray;
-  padding: 0px 20px 20px 20px;
-  margin: 0px;
-  @media (min-width: 768px) {
-    justify-content: space-evenly;
-    width: 350px;
-    height: 120px;
-    min-height: fit-content;
+  padding: 10px;
+  cursor: pointer;
+  @media (max-width: 767px) {
+    padding: 3px;
   }
 `
 
-export const ThumbnailUrlImage = styled.img`
-  width: 100vw;
-  margin: 0;
+export const ListContainer = styled.ul`
+  list-style-type: none;
   padding: 0;
+  margin-bottom: 25px;
   @media (min-width: 768px) {
-    width: 350px;
+    width: 300px;
+    height: 270px;
   }
 `
 
-export const ProfileUrlImage = styled.img`
-  width: 40px;
-  height: 40px;
+export const ListItem = styled.li`
   margin-right: 20px;
+  display: flex;
+  cursor: pointer;
 `
-export const HomeVideoTitle = styled(LoginParagraph)`
-  font-family: Roboto;
-  font-weight: 500;
-  font-size: 16px;
-  color: black;
-  padding-bottom: 0px;
-  margin-bottom: 0px;
+
+export const ImageTag = styled.img`
+  width: ${props => props.width};
+  object-fit: contain;
 `
-export const HomeVideoDescription = styled(LoginParagraph)`
-  font-family: Roboto;
-  font-weight: 500;
-  font-size: 14px;
-  color: gray;
-  padding-top: 0px;
-  margin-top: 5px;
+export const ContentDiv = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 `
-export const HomeVideoContainer = styled(Container)`
+
+export const ParaTag = styled.p`
+  font-size: ${props => props.fontSize};
+`
+
+export const NoResults = styled.div`
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  @media (max-width: 767px) {
+    justify-content: center;
+  }
+`
+
+export const NoVideosImage = styled.img`
+  width: 30%;
+  object-fit: contain;
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+  @media (min-width: 768px) {
+    padding-top: 30px;
+  }
+`
+export const NoResultsHeading = styled.h1`
+  @media (max-width: 767px) {
+    font-size: large;
+  }
+`
+
+export const NoResultsPara = styled.p`
+  @media (max-width: 767px) {
+    font-size: medium;
+  }
+`
+
+export const NoResultsButton = styled.button`
+  background-color: #4f46e5;
+  color: #ffffff;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 4px;
 `
